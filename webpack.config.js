@@ -10,8 +10,8 @@ module.exports = {
 				test: /\.(sass|css|scss)$/, 
 				use: [
 					process.env.NODE_ENV == 'production' ? MiniCssExtractPlugin.loader : 'style-loader',
-					'sass-loader',
-					'css-loader'
+					'css-loader',
+					'sass-loader'
 				]
 			}
 		]
