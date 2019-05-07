@@ -1,20 +1,26 @@
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
-const numUsers = 0;
+var numUsers = 0;
+var messageId = 1;
 
 app.get('/', async (req, res) => {
     res.send({ response: 'I am alive'}).status(200);
-  });
+});
 
 io.on('connection', socket => {
     numUsers++;
-    console.log('usuário conectado! Total de usuários: ' + numUsers);
+    console.log('Usuário conectado! Total de usuários: ' + numUsers);
+    socket.on('chat message', (message) => {
+        console.log('mensagem: '+ messageId + message);
+        io.emit('chat message', { id: messageId, message: message });
+        messageId++;
+    });
     socket.on('disconnect', () => {
         numUsers--;
-        console.log('usuário desconectado');
+        console.log('usuário desconectado! Total de usuários: ' + numUsers);
     })
 });
 

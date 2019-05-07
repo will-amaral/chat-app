@@ -7,7 +7,7 @@
   "author": "Will Amaral <willian.amaral@outlook.com.br>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
+    "client": "webpack-dev-server --mode development --open",
     "server": "node server/index.js",
     "build": "NODE_ENV=production webpack --mode production",
     "deploy": "gh-pages -d dist"
@@ -16,7 +16,8 @@
     "express": "^4.16.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
