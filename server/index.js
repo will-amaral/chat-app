@@ -11,17 +11,56 @@ app.get('/', async (req, res) => {
 });
 
 io.on('connection', socket => {
-    numUsers++;
+    var addedUser = false;
     console.log('Usuário conectado! Total de usuários: ' + numUsers);
+
     socket.on('chat message', (message) => {
-        console.log('mensagem: '+ messageId + message);
-        io.emit('chat message', { id: messageId, message: message });
+        console.log('mensagem: '+ messageId + data);
+        socket.broadcast.emit('chat message', {
+            id: messageId,
+            username: socket.username,
+            message: message
+        });
         messageId++;
     });
+
+    socket.on('add user', (username) => {
+        if (addedUser) return;
+
+        socket.username = username;
+        numUsers++;
+        socket.emit('login', {
+            numUsers: numUsers
+        });
+
+        socket.broadcast.emit('user joined', {
+            username: socket.username,
+            numUsers: numUsers
+        });
+    });
+
+    socket.on('typing', () => {
+        socket.broadcast.emit('typing', {
+            username: socket.username
+        });
+    });
+
+    socket.on('stop typing', () => {
+        socket.broadcast.emit('stop typing', {
+            username: socket.username
+        });
+    });
+
     socket.on('disconnect', () => {
-        numUsers--;
-        console.log('usuário desconectado! Total de usuários: ' + numUsers);
-    })
+        if (addedUser) {
+            --numUsers;
+            console.log('usuário desconectado! Total de usuários: ' + numUsers);
+            socket.broadcast.emit('user left', {
+                username: socket.username,
+                numUsers: numUsers
+            });
+        }
+    });
 });
 
 server.listen(8081, () =>{
