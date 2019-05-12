@@ -1,19 +1,19 @@
 import React from 'react';
+import { Control, Input } from 'bloomer';
 
 const ChatInput = props => {
-
 	return(
-		<div className="field">
-			<form className="control" onSubmit={props.onSubmit}>
-				<input 
-				className="input is-primary" 
-				type="text" 
-				placeholder="Digite a sua mensagem" 
-				value={props.value}
-				onChange={props.onChange} 
+			<Control tag="form" onSubmit={props.onSubmit}>
+				<Input
+					className="is-fixed-bottom"
+					isSize="large"
+					isColor="primary"
+					placeholder="Digite a sua mensagem aqui"
+					type="text"
+					value={props.value}
+					onChange={props.onChange}
 				/>
-			</form>
-		</div>
+			</Control>
 	);
 }
 

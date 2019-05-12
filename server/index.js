@@ -2,9 +2,18 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const randomColor = require('randomcolor');
 
 var numUsers = 0;
-var messageId = 1;
+
+const getUsers = server => {
+    let users = [];
+    for(var socketId in server) {
+        users.push(server[socketId].username);
+    }
+    console.log(users);
+    return users;
+}
 
 app.get('/', async (req, res) => {
     res.send({ response: 'I am alive'}).status(200);
@@ -12,31 +21,32 @@ app.get('/', async (req, res) => {
 
 io.on('connection', socket => {
     var addedUser = false;
-    console.log('Usuário conectado! Total de usuários: ' + numUsers);
-
+    var color = randomColor();
     socket.on('chat message', (message) => {
-        console.log('mensagem: '+ messageId + data);
+        console.log('mensagem: '+ message);
         socket.broadcast.emit('chat message', {
-            id: messageId,
+            color: color,
             username: socket.username,
             message: message
         });
-        messageId++;
     });
 
     socket.on('add user', (username) => {
         if (addedUser) return;
-
         socket.username = username;
         numUsers++;
+        addedUser = true;
         socket.emit('login', {
             numUsers: numUsers
         });
-
+        console.log('Usuário conectado: ' + username + '\nTotal de usuários: ' + numUsers);     
         socket.broadcast.emit('user joined', {
+            warning: true,
             username: socket.username,
+            message: ' entrou na sala',
             numUsers: numUsers
         });
+        io.emit('total users',getUsers(io.sockets.sockets));
     });
 
     socket.on('typing', () => {
@@ -56,9 +66,13 @@ io.on('connection', socket => {
             --numUsers;
             console.log('usuário desconectado! Total de usuários: ' + numUsers);
             socket.broadcast.emit('user left', {
+                warning: true,
                 username: socket.username,
-                numUsers: numUsers
+                message: ' saiu da sala',
+                numUsers: numUsers,
+                users: getUsers(io.sockets.sockets)
             });
+            io.emit('total users',getUsers(io.sockets.sockets));
         }
     });
 });
