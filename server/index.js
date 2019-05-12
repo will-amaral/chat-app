@@ -79,6 +79,6 @@ io.on('connection', socket => {
     });
 });
 
-server.listen(8081, () =>{
-    console.log('🚀 Servidor online em http://localhost:8081')
+server.listen(2000, () =>{
+    console.log('🚀 Servidor online em http://localhost:2000')
 });
