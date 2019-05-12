@@ -1,6 +1,5 @@
 # Diretórios
 node_modules/
-dist/
 
 # Logs
 *.log
