@@ -22,7 +22,7 @@ class App extends Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleLogin = this.handleLogin.bind(this);
-		socket = socketIOClient('http://192.168.0.101:8081')
+		socket = socketIOClient();
 	}
 
 	componentDidMount() {

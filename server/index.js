@@ -1,10 +1,16 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const randomColor = require('randomcolor');
 
 var numUsers = 0;
+
+app.use(express.static('dist'));
+app.get('/', (req, res) => {
+    res.sendFile('index.html');
+  });
 
 const getUsers = server => {
     let users = [];
@@ -14,10 +20,6 @@ const getUsers = server => {
     console.log(users);
     return users;
 }
-
-app.get('/', async (req, res) => {
-    res.send({ response: 'I am alive'}).status(200);
-});
 
 io.on('connection', socket => {
     var addedUser = false;
